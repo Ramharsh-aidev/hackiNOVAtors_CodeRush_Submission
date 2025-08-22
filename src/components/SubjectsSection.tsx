@@ -1,11 +1,15 @@
+// src/components/SubjectsSection.jsx
+
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Atom, Dna, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom'; // <-- 1. IMPORT Link
 
 const subjects = [
   {
     icon: Atom,
     title: 'Physics',
+    path: '/physics', // <-- Added path
     description: 'Explore quantum mechanics, relativity, and electromagnetic fields in stunning 3D environments.',
     bgClass: 'from-blue-600/20 to-purple-600/20',
     glowColor: 'shadow-blue-500/30',
@@ -13,6 +17,7 @@ const subjects = [
   {
     icon: Dna,
     title: 'Biology', 
+    path: '/biology', // <-- Added path
     description: 'Journey through cellular structures, DNA sequences, and ecological systems with unprecedented detail.',
     bgClass: 'from-green-600/20 to-teal-600/20',
     glowColor: 'shadow-green-500/30',
@@ -20,6 +25,7 @@ const subjects = [
   {
     icon: Zap,
     title: 'Chemistry',
+    path: '/chemistry', // <-- Added path
     description: 'Manipulate molecular structures, witness reactions, and understand chemical bonds interactively.',
     bgClass: 'from-orange-600/20 to-red-600/20',
     glowColor: 'shadow-orange-500/30',
@@ -56,13 +62,12 @@ export default function SubjectsSection() {
 
   return (
     <section ref={ref} className="relative py-32 overflow-hidden">
-      {/* Animated Background */}
+      {/* ... (rest of the background and header code is unchanged) ... */}
       <motion.div 
         className="absolute inset-0 cosmic-bg"
         style={{ y, opacity }}
       />
       
-      {/* Parallax Elements */}
       <motion.div 
         className="absolute top-20 left-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"
         style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
@@ -92,59 +97,52 @@ export default function SubjectsSection() {
             const Icon = subject.icon;
             
             return (
-              <motion.div
-                key={subject.title}
-                variants={cardVariants}
-                initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
-                transition={{ delay: index * 0.3 }}
-                className="group perspective-1000"
-              >
-                <div className="relative h-96 cursor-pointer transform-gpu transition-all duration-700 group-hover:rotate-y-12 group-hover:scale-105">
-                  {/* Card Background */}
-                  <div className={`absolute inset-0 glass-card bg-gradient-to-br ${subject.bgClass} transition-all duration-700 group-hover:${subject.glowColor} group-hover:shadow-2xl`}>
-                    
-                    {/* Content */}
-                    <div className="relative p-8 h-full flex flex-col justify-between">
-                      {/* Icon Section */}
-                      <div className="text-center">
-                        <div className="relative mb-6">
-                          <div className="absolute inset-0 bg-white/10 rounded-full blur-xl animate-pulse" />
-                          <div className="relative w-24 h-24 mx-auto glass-card rounded-full flex items-center justify-center">
-                            <Icon className="w-12 h-12 text-white" />
+              // <-- 2. WRAP the entire motion.div with the Link component -->
+              // We move the 'key' to the outermost element, which is now the Link.
+              <Link to={subject.path} key={subject.title}>
+                <motion.div
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  transition={{ delay: index * 0.3 }}
+                  className="group perspective-1000"
+                >
+                  {/* The 'cursor-pointer' is now handled by the Link (<a> tag) so it can be removed, but leaving it does no harm */}
+                  <div className="relative h-96 transform-gpu transition-all duration-700 group-hover:rotate-y-12 group-hover:scale-105">
+                    {/* ... (The entire inner structure of the card remains the same) ... */}
+                    <div className={`absolute inset-0 glass-card bg-gradient-to-br ${subject.bgClass} transition-all duration-700 group-hover:${subject.glowColor} group-hover:shadow-2xl`}>
+                      <div className="relative p-8 h-full flex flex-col justify-between">
+                        <div className="text-center">
+                          <div className="relative mb-6">
+                            <div className="absolute inset-0 bg-white/10 rounded-full blur-xl animate-pulse" />
+                            <div className="relative w-24 h-24 mx-auto glass-card rounded-full flex items-center justify-center">
+                              <Icon className="w-12 h-12 text-white" />
+                            </div>
+                          </div>
+                          <h3 className="text-3xl font-bold mb-4 text-white">
+                            {subject.title}
+                          </h3>
+                        </div>
+                        <div>
+                          <p className="text-card-foreground leading-relaxed mb-6">
+                            {subject.description}
+                          </p>
+                          <div className="w-full glass-button text-center justify-center group-hover:bg-white/20 transition-all duration-300">
+                            Explore {subject.title}
                           </div>
                         </div>
-                        
-                        <h3 className="text-3xl font-bold mb-4 text-white">
-                          {subject.title}
-                        </h3>
                       </div>
-                      
-                      {/* Description */}
-                      <div>
-                        <p className="text-card-foreground leading-relaxed mb-6">
-                          {subject.description}
-                        </p>
-                        
-                        <button className="w-full glass-button text-center justify-center group-hover:bg-white/20 transition-all duration-300">
-                          Explore {subject.title}
-                        </button>
-                      </div>
+                      <div className="absolute inset-0 bg-gradient-cosmic opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-700" />
                     </div>
-                    
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-cosmic opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-700" />
+                    <div className="absolute inset-0 bg-black/20 rounded-2xl transform translate-y-4 translate-x-4 -z-10 group-hover:translate-y-8 group-hover:translate-x-8 transition-transform duration-700" />
                   </div>
-                  
-                  {/* 3D Shadow */}
-                  <div className="absolute inset-0 bg-black/20 rounded-2xl transform translate-y-4 translate-x-4 -z-10 group-hover:translate-y-8 group-hover:translate-x-8 transition-transform duration-700" />
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             );
           })}
         </div>
         
-        {/* Call to Action */}
+        {/* ... (rest of the CTA code is unchanged) ... */}
         <motion.div
           className="text-center mt-20"
           initial={{ opacity: 0, scale: 0.9 }}
